@@ -1,0 +1,28 @@
+version: "3.7"
+
+networks:
+  test:
+    driver: bridge
+
+volumes:
+  db-data:
+
+services:
+  db:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: users-db
+    command: ["postgres", "-c", "shared_buffers=512MB", "-c", "max_connections=200"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - test

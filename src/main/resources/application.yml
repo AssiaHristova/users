@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/users-db
+    username: root
+    password: root
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+      show-sql: false
+      format-sql: false
+      dialet: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+      naming:
+        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+  h2:
+    console:
+      enabled: false
