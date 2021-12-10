@@ -5,7 +5,6 @@ import com.amazonaws.services.kinesis.model.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Optional;
 
 @Service
 public class UsersService {

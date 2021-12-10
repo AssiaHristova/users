@@ -1,9 +1,6 @@
 package com.example.users;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -24,18 +21,18 @@ public class UsersController {
         return usersService.getAll();
     }
     @PostMapping("/create")
-    public User create(String userName) {
+    public User create(@RequestBody String userName) {
         return usersService.createUser(userName);
     }
     @GetMapping("/users/{userId}")
     public User getUser(@PathVariable Long userId) {
         return usersService.getUserById(userId);
     }
-    @PostMapping("/update/{userId}")
+    @PutMapping("/update/{userId}")
     public User update(@PathVariable Long userId, String userName) {
         return usersService.update(userId, userName);
     }
-    @PostMapping("/delete/{userId}")
+    @DeleteMapping("/delete/{userId}")
     public void delete(@PathVariable Long userId) {
         usersService.delete(userId);
     }
