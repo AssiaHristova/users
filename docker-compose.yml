@@ -17,6 +17,7 @@ services:
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
+      -e POSTGRES_PASSWORD: root
       POSTGRES_DB: users-db
     command: ["postgres", "-c", "shared_buffers=512MB", "-c", "max_connections=200"]
     healthcheck:

@@ -1,7 +1,9 @@
 package com.example.users;
 
 
+import com.amazonaws.services.codebuild.model.ResourceAlreadyExistsException;
 import com.amazonaws.services.kinesis.model.ResourceNotFoundException;
+import liquibase.repackaged.org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -12,31 +14,50 @@ public class UsersService {
     @Resource
     private UsersRepo usersRepo;
 
-    public Iterable<User> getAll() {
+    private boolean existsById(Long id) {
+        return usersRepo.existsById(id);
+    }
+
+    public User findById(Long id) throws ResourceNotFoundException {
+        User user = usersRepo.findById(id).orElse(null);
+        if (user == null) {
+            throw new ResourceNotFoundException("Cannot find User with id: " + id);
+        } else return user;
+    }
+
+    public Iterable<User> findAll() {
         return usersRepo.findAll();
     }
 
-    public User createUser(String userName) {
-        User user = new User();
-        user.setUserName(userName);
-        user = usersRepo.save(user);
-        return user;
+    public User save(User user) throws ResourceAlreadyExistsException {
+        if (!StringUtils.isEmpty(user.getUserName())) {
+            if (user.getUserId() != null && existsById(user.getUserId())) {
+                throw new ResourceAlreadyExistsException("User with id: " + user.getUserId() +
+                        " already exists");
+            }
+            return usersRepo.save(user);
+        }
+        return usersRepo.save(user);
     }
 
-    public User getUserById(Long userId){
-        return usersRepo.findById(userId).orElseThrow(
-                () -> new ResourceNotFoundException("User not found with userId " + userId));
-    }
-
-    public void delete(Long userId) {
-        usersRepo.deleteById(userId);
-    }
-
-    public User update(Long userId, String newName) {
-       User user = getUserById(userId);
-        user.setUserName(newName);
-        usersRepo.save(user);
-        return user;
+    public void update(User user)
+            throws ResourceNotFoundException {
+        if (!StringUtils.isEmpty(user.getUserName())) {
+            if (!existsById(user.getUserId())) {
+                throw new ResourceNotFoundException("Cannot find User with id: " + user.getUserId());
+            }
+            usersRepo.save(user);
         }
     }
+
+    public void deleteById(Long id) throws ResourceNotFoundException {
+        if (!existsById(id)) {
+            throw new ResourceNotFoundException("Cannot find User with id: " + id);
+        } else {
+            usersRepo.deleteById(id);
+        }
+    }
+
+
+}
 
